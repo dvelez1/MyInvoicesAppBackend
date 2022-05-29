@@ -19,7 +19,7 @@ exports.getProducts = (request, response) => {
                     response.sendStatus(400)
                 }
                 else {
-                    response.send(result.recordset);
+                    response.status(200).send(result.recordset);
                 }
             })
         })
@@ -44,7 +44,8 @@ exports.getProcuctById = (request, response) => {
                         response.sendStatus(400)
                     }
                     else {
-                        response.send(result.recordset);
+                        response.status(200).send(result.recordset);
+                        //response.send(result.recordset);
                     }
                 })
         })
@@ -56,14 +57,15 @@ exports.getProcuctById = (request, response) => {
 };
 
 //Post API 
-exports.updateProduct =  (request, response) =>{
+exports.updateProduct = (request, response) => {
     try {
 
-    product.ProductId = request.body.ProductId;
-    product.Name = request.body.Name;
-    product.Price = request.body.Price;
-    product.StartDate = request.body.StartDate;
-    product.EndDate = request.body.EndDate;
+        if (!request.body.length) {
+            response.sendStatus(400).send("Not record to update!")
+        }
+        product = request.body;
+        product.StartDate = date.getFormattedDate(product.StartDate)
+        product.EndDate = date.getFormattedDate(product.EndDate)
 
         pool.connect().then(() => {
             //simple query
@@ -83,7 +85,7 @@ exports.updateProduct =  (request, response) =>{
                         response.sendStatus(400)
                     }
                     else {
-                        response.sendStatus(200)
+                        response.status(200).send("Success")
                         //response.status(200).send({message: "Success"})
                     }
                 })
@@ -98,14 +100,16 @@ exports.updateProduct =  (request, response) =>{
 };
 
 // PUT API
-exports.createProduct = (request, response) =>{
+exports.createProduct = (request, response) => {
     try {
 
-        product.ProductId = request.body.ProductId;
-        product.Name = request.body.Name;
-        product.Price = request.body.Price;
-        product.StartDate = request.body.StartDate;
-        product.EndDate = request.body.EndDate;
+        if (!request.body.length) {
+            response.sendStatus(400).send("Not record to update!")
+        }
+
+        product = request.body;
+        product.StartDate = date.getFormattedDate(product.StartDate)
+        product.EndDate = date.getFormattedDate(product.EndDate)
 
         pool.connect().then(() => {
             //simple query
@@ -113,18 +117,18 @@ exports.createProduct = (request, response) =>{
                 'VALUES(@Name, @Price, @StartDate, @EndDate)';
 
             pool.request()
-            .input("ProductId", sql.Int, product.ProductId)
-            .input("Name", sql.VarChar, product.Name)
-            .input("Price", sql.Money, product.Price)
-            .input("StartDate", sql.Date, date.getCurrentDate())
-            .input("EndDate", sql.Date, null)
+                .input("ProductId", sql.Int, product.ProductId)
+                .input("Name", sql.VarChar, product.Name)
+                .input("Price", sql.Money, product.Price)
+                .input("StartDate", sql.Date, date.getCurrentDate())
+                .input("EndDate", sql.Date, null)
                 .query(queryString, (err, result) => {
                     if (err) {
                         console.log(err)
                         response.sendStatus(400)
                     }
                     else {
-                        response.sendStatus(200)
+                        response.status(200).send("success")
                     }
                 })
 
