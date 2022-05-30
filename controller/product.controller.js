@@ -60,9 +60,6 @@ exports.getProcuctById = (request, response) => {
 exports.updateProduct = (request, response) => {
     try {
 
-        if (!request.body.length) {
-            response.sendStatus(400).send("Not record to update!")
-        }
         product = request.body;
         product.StartDate = date.getFormattedDate(product.StartDate)
         product.EndDate = date.getFormattedDate(product.EndDate)
@@ -103,10 +100,6 @@ exports.updateProduct = (request, response) => {
 exports.createProduct = (request, response) => {
     try {
 
-        if (!request.body.length) {
-            response.sendStatus(400).send("Not record to update!")
-        }
-
         product = request.body;
         product.StartDate = date.getFormattedDate(product.StartDate)
         product.EndDate = date.getFormattedDate(product.EndDate)
@@ -129,7 +122,7 @@ exports.createProduct = (request, response) => {
                         response.sendStatus(400)
                     }
                     else {
-                        response.status(200).send("success")
+                        response.status(200).send(result.recordset[0])
                     }
                 })
 

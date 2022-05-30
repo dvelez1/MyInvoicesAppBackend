@@ -86,9 +86,6 @@ exports.getInvoiceMasterByCustomerId = (request, response) => {
 exports.updateInvoiceMaster = (request, response) => {
     try {
 
-        if (!request.body.length)
-            response.sendStatus(400).send("Not record to update!")
-
         invoiceMaster = request.body;
         invoiceMaster.StartDate = date.getFormattedDate(invoiceMaster.StartDate)
         invoiceMaster.EndDate = date.getFormattedDate(invoiceMaster.EndDate)

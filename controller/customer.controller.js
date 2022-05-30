@@ -61,9 +61,6 @@ exports.getCustomerById = (request, response) => {
 exports.updateCustomer = (request, response) => {
     try {
 
-        if (!request.body.length)
-            response.sendStatus(400).send("Not record to update!")
-
         customer = request.body;
         customer.StartDate = date.getFormattedDate(customer.StartDate);
         customer.EndDate = date.getFormattedDate(customer.EndDate);
@@ -113,9 +110,6 @@ exports.updateCustomer = (request, response) => {
 exports.createCustomer = (request, response) => {
     try {
 
-        if (!request.body.length)
-            response.sendStatus(400).send("Not record to update!")
-
         customer = request.body;
         customer.StartDate = date.getFormattedDate(customer.StartDate);
         customer.EndDate = null;
@@ -151,7 +145,7 @@ exports.createCustomer = (request, response) => {
                         response.sendStatus(400)
                     }
                     else {
-                        response.status(200).send("success")
+                        response.status(200).send(result.recordset[0])
                     }
                 })
 

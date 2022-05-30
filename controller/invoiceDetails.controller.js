@@ -39,9 +39,6 @@ exports.getInvoiceDetailsByInvoiceId = (request, response) => {
 exports.deleteInvoiceDetails = (request, response) => {
     try {
 
-        if (!request.body.length)
-            response.sendStatus(400).send("Not record to update!")
-
         const id = parseInt(request.params.Id);
 
         pool.connect().then(() => {
@@ -77,9 +74,6 @@ exports.deleteInvoiceDetails = (request, response) => {
 exports.createInvoiceDetails = (request, response) => {
     try {
 
-        if (!request.body.length)
-            response.sendStatus(400).send("Not record to update!")
-
         invoiceDetails = request.body;
         invoiceDetails.RemovedDate = date.getFormattedDate(invoiceDetails.RemovedDate)
 
@@ -102,7 +96,7 @@ exports.createInvoiceDetails = (request, response) => {
                         response.sendStatus(400)
                     }
                     else {
-                        response.status(200).send("success")
+                        response.status(200).send(result.recordset[0]);
                     }
                 })
         })
