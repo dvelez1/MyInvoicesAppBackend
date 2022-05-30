@@ -89,9 +89,9 @@ exports.updateInvoiceMaster = (request, response) => {
         if (!request.body.length)
             response.sendStatus(400).send("Not record to update!")
 
-            invoiceMaster = request.body;
-            invoiceMaster.StartDate = date.getFormattedDate(invoiceMaster.StartDate)
-            invoiceMaster.EndDate = date.getFormattedDate(invoiceMaster.EndDate)
+        invoiceMaster = request.body;
+        invoiceMaster.StartDate = date.getFormattedDate(invoiceMaster.StartDate)
+        invoiceMaster.EndDate = date.getFormattedDate(invoiceMaster.EndDate)
 
         pool.connect().then(() => {
             //simple query
@@ -131,18 +131,15 @@ exports.updateInvoiceMaster = (request, response) => {
 exports.createInvoiceMaster = (request, response) => {
     try {
 
-        if (!request.body.length)
-            response.sendStatus(400).send("Not record to update!")
-
-
-            invoiceMaster = request.body;
-            invoiceMaster.StartDate = date.getFormattedDate(invoiceMaster.StartDate)
-            invoiceMaster.EndDate = date.getFormattedDate(invoiceMaster.EndDate)
+        invoiceMaster = request.body;
+        invoiceMaster.StartDate = date.getFormattedDate(invoiceMaster.StartDate)
+        invoiceMaster.EndDate = date.getFormattedDate(invoiceMaster.EndDate)
 
         pool.connect().then(() => {
             //simple query
             queryString = 'Insert Into dbo.InvoiceMaster(CustomerId, TotalAmount, PayedAmount, StartDate, EndDate, TransactionActive ) ' +
-                'VALUES(@CustomerId, @TotalAmount, @PayedAmount, @StartDate,  @EndDate,  @TransactionActive)';
+                'VALUES(@CustomerId, @TotalAmount, @PayedAmount, @StartDate,  @EndDate,  @TransactionActive) ' +
+                'SELECT SCOPE_IDENTITY() as Id';
 
             pool.request()
                 .input("CustomerId", sql.Int, invoiceMaster.CustomerId)
@@ -157,7 +154,7 @@ exports.createInvoiceMaster = (request, response) => {
                         response.sendStatus(400)
                     }
                     else {
-                        response.status(200).send("success")
+                        response.status(200).send(result.recordset[0])
                     }
                 })
         })

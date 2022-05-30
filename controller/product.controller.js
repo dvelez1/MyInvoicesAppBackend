@@ -114,7 +114,8 @@ exports.createProduct = (request, response) => {
         pool.connect().then(() => {
             //simple query
             queryString = 'Insert Into dbo.Product(Name, Price, StartDate, EndDate ) ' +
-                'VALUES(@Name, @Price, @StartDate, @EndDate)';
+                'VALUES(@Name, @Price, @StartDate, @EndDate) ' +
+                'SELECT SCOPE_IDENTITY() as Id';
 
             pool.request()
                 .input("ProductId", sql.Int, product.ProductId)

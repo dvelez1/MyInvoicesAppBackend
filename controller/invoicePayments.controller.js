@@ -87,7 +87,8 @@ exports.createInvoicePayment = (request, response) => {
         pool.connect().then(() => {
             //simple query
             queryString = 'Insert Into dbo.InvoicePayments([InvoiceId],[Payment],[TransactionDate],[RemovedTransaction],[RemovedTransactionDate]) ' +
-                'VALUES(@InvoiceId, @Payment, @TransactionDate,@RemovedTransaction, @RemovedTransactionDate )';
+                'VALUES(@InvoiceId, @Payment, @TransactionDate,@RemovedTransaction, @RemovedTransactionDate ) ' + 
+                'SELECT SCOPE_IDENTITY() as Id';
 
             pool.request()
                 .input("InvoiceId", sql.Int, invoicePayments.InvoiceId)

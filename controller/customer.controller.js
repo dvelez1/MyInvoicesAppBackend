@@ -124,7 +124,8 @@ exports.createCustomer = (request, response) => {
             'SET Name = @Name, MiddleName = @MiddleName, FirstName = @FirstName, LastName = @LastName ' +
             'Addres1 = @Addres1, Address2 = @Address2, City = @City, State = @State ' +
             'ZipCode = @ZipCode, StartDate = @StartDate, EndDate = @EndDate ' +
-            ' WHERE CustomerId=@CustomerId';
+            ' WHERE CustomerId=@CustomerId ' + 
+            'SELECT SCOPE_IDENTITY() as Id';
 
 
         pool.connect().then(() => {
