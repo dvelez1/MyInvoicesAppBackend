@@ -1,9 +1,9 @@
 exports = {
     InvoiceId:0,
-    CustomerId:"",
     StartDate:"",
+    CustomerId:"",
     EndDate:"",
+    TransactionActive:"",
     TotalAmount:"",
     PayedAmount:"",
-    Closed:""
 }
