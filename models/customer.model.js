@@ -4,7 +4,7 @@ exports = {
     MiddleName:"",
     FirstName:"",
     LastName:"",
-    Addres1:"",
+    Address1:"",
     Address2:"",
     City:"",
     State:"",
