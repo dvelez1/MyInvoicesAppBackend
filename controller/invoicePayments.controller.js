@@ -96,7 +96,7 @@ exports.createInvoicePayment = (request, response) => {
                         response.sendStatus(400)
                     }
                     else {
-                        response.status(200).send(result.recordset[0])
+                        response.status(200).send(result.recordset)
                     }
                 })
         })
