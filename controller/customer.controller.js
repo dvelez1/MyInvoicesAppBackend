@@ -116,7 +116,7 @@ exports.createCustomer = (request, response) => {
 
         queryString = 'Update dbo.Customer ' +
             'SET Name = @Name, MiddleName = @MiddleName, FirstName = @FirstName, LastName = @LastName ' +
-            'Addres1 = @Address1, Address2 = @Address2, City = @City, State = @State ' +
+            'Address1 = @Address1, Address2 = @Address2, City = @City, State = @State ' +
             'ZipCode = @ZipCode, StartDate = @StartDate, EndDate = @EndDate ' +
             ' WHERE CustomerId=@CustomerId ' + 
             'SELECT SCOPE_IDENTITY() as Id';
@@ -124,8 +124,8 @@ exports.createCustomer = (request, response) => {
 
         pool.connect().then(() => {
             //simple query
-            queryString = 'Insert Into dbo.Customer(Name,MiddleName,FirstName,LastName,Addres1,Address2,City,State,ZipCode,StartDate,EndDate ) ' +
-                'VALUES(@Name,@MiddleName,@FirstName,@LastName,@Addres1,@Address2,@City,@State,@ZipCode,@StartDate,@EndDate)';
+            queryString = 'Insert Into dbo.Customer(Name,MiddleName,FirstName,LastName,Address1,Address2,City,State,ZipCode,StartDate,EndDate ) ' +
+                'VALUES(@Name,@MiddleName,@FirstName,@LastName,@Address1,@Address2,@City,@State,@ZipCode,@StartDate,@EndDate)';
 
             pool.request()
                 .input("Name", sql.VarChar, customer.Name)
@@ -145,7 +145,7 @@ exports.createCustomer = (request, response) => {
                         response.sendStatus(400)
                     }
                     else {
-                        response.status(200).send(result.recordset[0])
+                        response.status(200).send(result.recordset)
                     }
                 })
 
