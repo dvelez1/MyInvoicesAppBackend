@@ -60,19 +60,20 @@ exports.getCustomerById = (request, response) => {
 //Post API 
 exports.updateCustomer = (request, response) => {
     try {
-
+        console.log("entre")
         customer = request.body;
+        console.log(customer)
         customer.StartDate = date.getFormattedDate(customer.StartDate);
-        customer.EndDate = date.getFormattedDate(customer.EndDate);
+        customer.EndDate = customer.EndDate == null ? date.getFormattedDate(customer.EndDate) : null;
 
         pool.connect().then(() => {
             //simple query
             queryString = 'Update dbo.Customer ' +
-                'SET Name = @Name, MiddleName = @MiddleName, FirstName = @FirstName, LastName = @LastName ' +
-                'Address1 = @Address1, Address2 = @Address2, City = @City, State = @State ' +
+                'SET Name = @Name, MiddleName = @MiddleName, FirstName = @FirstName, LastName = @LastName, ' +
+                'Address1 = @Address1, Address2 = @Address2, City = @City, State = @State, ' +
                 'ZipCode = @ZipCode, StartDate = @StartDate, EndDate = @EndDate ' +
                 ' WHERE CustomerId=@CustomerId';
-
+                console.log("listo query")
             pool.request()
                 .input("CustomerId", sql.Int, customer.CustomerId)
                 .input("Name", sql.VarChar, customer.Name)
@@ -93,7 +94,6 @@ exports.updateCustomer = (request, response) => {
                     }
                     else {
                         response.status(200).send("success")
-                        //response.status(200).send({message: "Success"})
                     }
                 })
 
