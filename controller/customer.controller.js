@@ -60,9 +60,7 @@ exports.getCustomerById = (request, response) => {
 //Post API 
 exports.updateCustomer = (request, response) => {
     try {
-        console.log("entre")
         customer = request.body;
-        console.log(customer)
         customer.StartDate = date.getFormattedDate(customer.StartDate);
         customer.EndDate = customer.EndDate == null ? date.getFormattedDate(customer.EndDate) : null;
 
@@ -73,7 +71,7 @@ exports.updateCustomer = (request, response) => {
                 'Address1 = @Address1, Address2 = @Address2, City = @City, State = @State, ' +
                 'ZipCode = @ZipCode, StartDate = @StartDate, EndDate = @EndDate ' +
                 ' WHERE CustomerId=@CustomerId';
-                console.log("listo query")
+   
             pool.request()
                 .input("CustomerId", sql.Int, customer.CustomerId)
                 .input("Name", sql.VarChar, customer.Name)
