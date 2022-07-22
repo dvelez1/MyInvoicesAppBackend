@@ -12,7 +12,7 @@ const pool = dbConfig.getConnection();
 exports.getInvoiceMasterAll = (request, response) => {
     try {
         pool.connect().then(() => {
-            queryString = 'Select  [InvoiceId],[StartDate],[CustomerId],[EndDate],[TransactionActive],[TotalAmount],[PayedAmount] from dbo.[InvoiceMaster]';
+            queryString = 'Select  [InvoiceId],[StartDate],[CustomerId],[EndDate],[TransactionActive],[TotalAmount],[PayedAmount], Note from dbo.[InvoiceMaster] where Void = 0';
             pool.request().query(queryString, (err, result) => {
                 if (err) {
                     console.log(err)
@@ -35,7 +35,7 @@ exports.getInvoiceMasterById = (request, response) => {
         pool.connect().then(() => {
             const id = parseInt(request.params.Id);
 
-            queryString = 'select [InvoiceId],[StartDate],[CustomerId],[EndDate],[TransactionActive],[TotalAmount],[PayedAmount] from dbo.[InvoiceMaster] where InvoiceId=@Id';
+            queryString = 'select [InvoiceId],[StartDate],[CustomerId],[EndDate],[TransactionActive],[TotalAmount],[PayedAmount], Note from dbo.[InvoiceMaster] where InvoiceId=@Id';
             pool.request()
                 .input("Id", sql.Int, id)
                 .query(queryString, (err, result) => {
@@ -61,7 +61,7 @@ exports.getInvoiceMasterByCustomerId = (request, response) => {
         pool.connect().then(() => {
             const id = parseInt(request.params.Id);
 
-            queryString = 'select [InvoiceId],[StartDate],[CustomerId],[EndDate],[TransactionActive],[TotalAmount],[PayedAmount] from dbo.[InvoiceMaster] where CustomerId=@Id';
+            queryString = 'select [InvoiceId],[StartDate],[CustomerId],[EndDate],[TransactionActive],[TotalAmount],[PayedAmount], Note from dbo.[InvoiceMaster] where CustomerId=@Id and Void = 0';
             pool.request()
                 .input("Id", sql.Int, id)
                 .query(queryString, (err, result) => {
@@ -93,7 +93,7 @@ exports.updateInvoiceMaster = (request, response) => {
         pool.connect().then(() => {
             //simple query
             queryString = 'Update dbo.InvoiceMaster ' +
-                'SET CustomerId = @CustomerId,  StartDate = @StartDate, EndDate = @EndDate, TransactionActive = @TransactionActive, TotalAmount = @TotalAmount, PayedAmount = @PayedAmount ' +
+                'SET CustomerId = @CustomerId,  StartDate = @StartDate, EndDate = @EndDate, TransactionActive = @TransactionActive, TotalAmount = @TotalAmount, PayedAmount = @PayedAmount, Note = @Note ' +
                 ' WHERE InvoiceId=@InvoiceId';
 
             pool.request()
@@ -104,6 +104,7 @@ exports.updateInvoiceMaster = (request, response) => {
                 .input("StartDate", sql.Date, invoiceMaster.StartDate)
                 .input("EndDate", sql.Date, invoiceMaster.EndDate)
                 .input("TransactionActive", sql.Bit, invoiceMaster.TransactionActive)
+                .input("Note", sql.VarChar, invoiceMaster.Note)
                 .query(queryString, (err, result) => {
                     if (err) {
                         console.log(err)
@@ -134,8 +135,8 @@ exports.createInvoiceMaster = (request, response) => {
 
         pool.connect().then(() => {
             //simple query
-            queryString = 'Insert Into dbo.InvoiceMaster(CustomerId, TotalAmount, PayedAmount, StartDate, EndDate, TransactionActive ) ' +
-                'VALUES(@CustomerId, @TotalAmount, @PayedAmount, @StartDate,  @EndDate,  @TransactionActive) ' +
+            queryString = 'Insert Into dbo.InvoiceMaster(CustomerId, TotalAmount, PayedAmount, StartDate, EndDate, TransactionActive, Note, Void) ' +
+                'VALUES(@CustomerId, @TotalAmount, @PayedAmount, @StartDate,  @EndDate,  @TransactionActive, @Note, 0) ' +
                 'SELECT SCOPE_IDENTITY() as Id';
 
             pool.request()
@@ -145,6 +146,7 @@ exports.createInvoiceMaster = (request, response) => {
                 .input("StartDate", sql.Date, invoiceMaster.StartDate)
                 .input("EndDate", sql.Date, invoiceMaster.EndDate)
                 .input("TransactionActive", sql.Bit, invoiceMaster.TransactionActive)
+                .input("Note", sql.VarChar, invoiceMaster.Note)
                 .query(queryString, (err, result) => {
                     if (err) {
                         console.log(err)
@@ -162,5 +164,42 @@ exports.createInvoiceMaster = (request, response) => {
         response.send(err.message)
     }
 };
+
+// Delete
+exports.deleteInvoiceMaster = (request, response) => {
+    try {
+
+        const id = parseInt(request.params.Id);
+
+        pool.connect().then(() => {
+            //simple query
+            queryString = 'Update dbo.InvoiceMaster ' +
+                'SET Void = @Void, TransactionActive = @TransactionActive,  EndDate = @EndDate WHERE InvoiceId=@Id'
+
+            pool.request()
+                .input("Id", sql.Int, id)
+                .input("EndDate", sql.Date, date.getCurrentDate())
+                .input("TransactionActive", sql.Bit, 0)
+                .input("Void", sql.Bit, 1)
+                .query(queryString, (err, result) => {
+                    if (err) {
+                        console.log(err)
+                        response.sendStatus(400)
+                    }
+                    else {
+                        response.status(200).send("Success")
+                        //response.status(200).send({message: "Success"})
+                    }
+                })
+
+        })
+
+    } catch (err) {
+        console.log(err)
+        response.status(500)
+        response.send(err.message)
+    }
+};
+
 
 

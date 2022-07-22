@@ -6,4 +6,6 @@ exports = {
     TransactionActive:"",
     TotalAmount:"",
     PayedAmount:"",
+    Void:"",
+    Note:""
 }

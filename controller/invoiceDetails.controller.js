@@ -14,7 +14,7 @@ exports.getInvoiceDetailsByInvoiceId = (request, response) => {
         pool.connect().then(() => {
             const id = parseInt(request.params.Id);
 
-            queryString = 'select [InvoiceDetailsId],[InvoiceId],[ProductId],[CatalogPrice],[Price],[RemovedTransaction], RemovedDate from dbo.[InvoiceDetails] where InvoiceId=@Id';
+            queryString = 'select [InvoiceDetailsId],[InvoiceId],[ProductId], [Quantity],[CatalogPrice],[Price],[RemovedTransaction], RemovedDate from dbo.[InvoiceDetails] where InvoiceId=@Id and RemovedTransaction = 0';
             pool.request()
                 .input("Id", sql.Int, id)
                 .query(queryString, (err, result) => {
@@ -34,7 +34,6 @@ exports.getInvoiceDetailsByInvoiceId = (request, response) => {
         response.send(err.message)
     }
 };
-
 
 exports.deleteInvoiceDetails = (request, response) => {
     try {
@@ -70,7 +69,7 @@ exports.deleteInvoiceDetails = (request, response) => {
     }
 };
 
-// PUT API
+// PUT API (Create)
 exports.createInvoiceDetails = (request, response) => {
     try {
 
@@ -79,13 +78,14 @@ exports.createInvoiceDetails = (request, response) => {
 
         pool.connect().then(() => {
             //simple query
-            queryString = 'Insert Into dbo.InvoiceDetails([InvoiceId],[ProductId],[CatalogPrice],[Price],[RemovedTransaction], RemovedDate) ' +
-                'VALUES(@InvoiceId, @ProductId, @CatalogPrice, @Price,  @RemovedTransaction, @RemovedDate) ' + 
+            queryString = 'Insert Into dbo.InvoiceDetails([InvoiceId],[ProductId], [Quantity], [CatalogPrice],[Price],[RemovedTransaction], RemovedDate) ' +
+                'VALUES(@InvoiceId, @ProductId, @Quantity, @CatalogPrice, @Price,  @RemovedTransaction, @RemovedDate) ' + 
                 'SELECT SCOPE_IDENTITY() as Id';
 
             pool.request()
                 .input("InvoiceId", sql.Int, invoiceDetails.InvoiceId)
                 .input("ProductId", sql.Int, invoiceDetails.ProductId)
+                .input("Quantity", sql.Int, invoiceDetails.Quantity)
                 .input("CatalogPrice", sql.Money, invoiceDetails.CatalogPrice)
                 .input("Price", sql.Money, invoiceDetails.Price)
                 .input("RemovedTransaction", sql.Bit, invoiceDetails.RemovedTransaction)

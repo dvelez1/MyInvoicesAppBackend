@@ -11,6 +11,8 @@ module.exports = appProduct => {
     router.post("/updateInvoiceMaster", invoiceMaster.updateInvoiceMaster);
    
     router.put("/createInvoiceMaster", invoiceMaster.createInvoiceMaster);
+
+    router.delete("/deleteInvoiceMaster/:Id", invoiceMaster.deleteInvoiceMaster);
   
     appProduct.use('/Api/invoiceMaster', router);
   
