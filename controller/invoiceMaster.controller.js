@@ -56,6 +56,36 @@ exports.getInvoiceMasterById = (request, response) => {
     }
 };
 
+// Custom Object Method
+exports.getTransformedInvoiceAll = (request, response) => {
+    try {
+        pool.connect().then(() => {
+            queryString = 
+            ' SELECT [InvoiceId],IM.[StartDate],IM.[CustomerId],C.[Name] as CustomerName,IM.[EndDate],[TransactionActive],[TotalAmount],[PayedAmount],[Note],[Void] ' +
+            ' FROM [dbo].[InvoiceMaster] as IM INNER JOIN Customer AS C ON IM.CustomerId = c.CustomerId where Void=0  order by InvoiceId ASC' + 
+
+            ' SELECT [InvoiceDetailsId],[InvoiceId],ID.[ProductId],P.[Name] AS ProductName,[CatalogPrice],ID.[Price],[RemovedTransaction],[RemovedDate],[Quantity] ' +
+            ' FROM [dbo].[InvoiceDetails] AS ID INNER JOIN Product AS P ON ID.ProductId = P.ProductId where RemovedTransaction=0' +
+
+            ' SELECT [InvoicePaiymentsId],[InvoiceId],[Payment],[TransactionDate],[RemovedTransactionDate],[RemovedTransaction] ' +
+            ' FROM [dbo].[InvoicePayments] WHERE RemovedTransaction = 0'
+            pool.request().query(queryString, (err, result) => {
+                if (err) {
+                    console.log(err)
+                    response.sendStatus(400)
+                }
+                else {
+                    response.status(200).send(result.recordsets);
+                }
+            })
+        })
+    } catch (err) {
+        console.log(err)
+        response.status(500)
+        response.send(err.message)
+    }
+};
+
 exports.getInvoiceMasterByCustomerId = (request, response) => {
     try {
         pool.connect().then(() => {

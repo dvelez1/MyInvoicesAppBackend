@@ -13,6 +13,9 @@ module.exports = appProduct => {
     router.put("/createInvoiceMaster", invoiceMaster.createInvoiceMaster);
 
     router.delete("/deleteInvoiceMaster/:Id", invoiceMaster.deleteInvoiceMaster);
+
+    // Transformed Invoice
+    router.get("/getTransformedInvoiceAll", invoiceMaster.getTransformedInvoiceAll);
   
     appProduct.use('/Api/invoiceMaster', router);
   
