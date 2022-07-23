@@ -62,14 +62,14 @@ exports.getTransformedInvoiceAll = (request, response) => {
     try {
         pool.connect().then(() => {
             queryString = 
-            ' SELECT [InvoiceId],IM.[StartDate],IM.[CustomerId], C.[Name], C.FirstName, C.LastName  as CustomerName,IM.[EndDate],[TransactionActive],[TotalAmount],[PayedAmount],[Note],[Void] ' +
+            ' SELECT [InvoiceId],IM.[StartDate],IM.[CustomerId], C.[Name] as CustomerName, C.FirstName, C.LastName ,IM.[EndDate],[TransactionActive],[TotalAmount],[PayedAmount],[Note],[Void] ' +
             ' FROM [dbo].[InvoiceMaster] as IM INNER JOIN Customer AS C ON IM.CustomerId = c.CustomerId where Void=0  order by InvoiceId ASC' + 
 
-            ' SELECT [InvoiceDetailsId],[InvoiceId],ID.[ProductId],P.[Name] AS ProductName,[CatalogPrice],ID.[Price],[RemovedTransaction],[RemovedDate],[Quantity] ' +
-            ' FROM [dbo].[InvoiceDetails] AS ID INNER JOIN Product AS P ON ID.ProductId = P.ProductId where RemovedTransaction=0' +
+            ' SELECT [InvoiceDetailsId],[InvoiceId],ID.[ProductId],P.[Name] as ProductName,[CatalogPrice],ID.[Price],[RemovedTransaction],[RemovedDate],[Quantity] ' +
+            ' FROM [dbo].[InvoiceDetails] AS ID INNER JOIN Product AS P ON ID.ProductId = P.ProductId where RemovedTransaction=0 and [InvoiceId] IN (SELECT InvoiceId FROM [dbo].[InvoiceMaster] where Void=0) order by InvoiceId ASC' +
 
             ' SELECT [InvoicePaiymentsId],[InvoiceId],[Payment],[TransactionDate],[RemovedTransactionDate],[RemovedTransaction] ' +
-            ' FROM [dbo].[InvoicePayments] WHERE RemovedTransaction = 0'
+            ' FROM [dbo].[InvoicePayments] WHERE RemovedTransaction = 0 and [InvoiceId] IN (SELECT InvoiceId FROM [dbo].[InvoiceMaster] where Void=0) order by InvoiceId ASC'
 
             console.log (queryString)
             pool.request().query(queryString, (err, result) => {
