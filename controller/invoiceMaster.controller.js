@@ -71,7 +71,6 @@ exports.getTransformedInvoiceAll = (request, response) => {
             ' SELECT [InvoicePaiymentsId],[InvoiceId],[Payment],[TransactionDate],[RemovedTransactionDate],[RemovedTransaction] ' +
             ' FROM [dbo].[InvoicePayments] WHERE RemovedTransaction = 0 and [InvoiceId] IN (SELECT InvoiceId FROM [dbo].[InvoiceMaster] where Void=0) order by InvoiceId ASC'
 
-            console.log (queryString)
             pool.request().query(queryString, (err, result) => {
                 if (err) {
                     console.log(err)
