@@ -73,10 +73,9 @@ exports.deleteInvoicePayments = (request, response) => {
 // PUT API
 exports.createInvoicePayment = (request, response) => {
     try {
-
         invoicePayments = request.body;
-        invoicePayments.TransactionDate = date.getFormattedDate(invoiceDetails.TransactionDate)
-        invoicePayments.RemovedTransactionDate = date.getFormattedDate(invoiceDetails.RemovedTransactionDate)
+        invoicePayments.TransactionDate = date.getFormattedDate(invoicePayments.TransactionDate)
+        invoicePayments.RemovedTransactionDate = date.getFormattedDate(invoicePayments.RemovedTransactionDate)
 
         pool.connect().then(() => {
             //simple query

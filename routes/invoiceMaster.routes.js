@@ -14,6 +14,8 @@ module.exports = appProduct => {
 
     router.delete("/deleteInvoiceMaster/:Id", invoiceMaster.deleteInvoiceMaster);
 
+    router.delete("/deleteInvoiceAllByInvoiceId/:Id", invoiceMaster.deleteInvoiceMaster);
+
     // Transformed Invoice
     router.get("/getTransformedInvoiceAll", invoiceMaster.getTransformedInvoiceAll);
   
