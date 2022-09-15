@@ -8,26 +8,93 @@ var product = require("../models/product.model")
 var date = require("../utilities/dateTime")
 
 const pool = dbConfig.getConnection();
+const poolMySql = dbConfig.getMySqlConnection()
+
+// SQL Server
+// exports.getProducts = (request, response) => {
+//     try {
+//         pool.connect().then(() => {
+//             queryString = 'Select  [ProductId],[Name],[Price],[StartDate],[EndDate] from dbo.[Product]';
+//             pool.request().query(queryString, (err, result) => {
+//                 if (err) {
+//                     console.log(err)
+//                     response.sendStatus(400)
+//                 }
+//                 else {
+//                     response.status(200).send(result.recordset);
+//                 }
+//             })
+//         })
+//     } catch (err) {
+//         console.log(err)
+//         response.status(500)
+//         response.send(err.message)
+//     }
+// };
+
+// MySql (Select query)
+// exports.getProducts = (request, response) => {
+//     try {
+//         queryString = 'Select  ProductId, Name,Price,StartDate,EndDate from invoices.product';
+//         poolMySql.query(queryString,(err,data) =>{
+//             if (err) {
+//                 console.log(err)
+//                 response.sendStatus(400)
+//             }
+//             else {
+//                 console.log(data)
+//                 response.status(200).send(data);
+//             }
+//         })
+
+//     } catch (err) {
+//         console.log(err)
+//         response.status(500)
+//         response.send(err.message)
+//     }
+// };
 
 exports.getProducts = (request, response) => {
     try {
-        pool.connect().then(() => {
-            queryString = 'Select  [ProductId],[Name],[Price],[StartDate],[EndDate] from dbo.[Product]';
-            pool.request().query(queryString, (err, result) => {
-                if (err) {
-                    console.log(err)
-                    response.sendStatus(400)
-                }
-                else {
-                    response.status(200).send(result.recordset);
-                }
-            })
+        queryString = 'CALL sp_getProducts()';
+        poolMySql.query(queryString,(err,data) =>{
+            if (err) {
+                console.log(err)
+                response.sendStatus(400)
+            }
+            else {
+                console.log(data[0])
+                response.status(200).send(data[0]);
+            }
         })
+
     } catch (err) {
         console.log(err)
         response.status(500)
         response.send(err.message)
     }
+
+
+
+    //     try {
+    //         poolMySql.connect().then(() => {
+    //             poolMySql.request().query(queryString, (err, result) => {
+    //             if (err) {
+    //                 console.log(err)
+    //                 response.sendStatus(400)
+    //             }
+    //             else {
+    //                 response.status(200).send(result.recordset);
+    //             }
+    //         })
+    //     })
+    // } catch (err) {
+    //     console.log(err)
+    //     response.status(500)
+    //     response.send(err.message)
+    // }
+
+
 };
 
 exports.getProcuctById = (request, response) => {
