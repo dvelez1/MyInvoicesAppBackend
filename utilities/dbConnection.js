@@ -33,5 +33,11 @@ function getMySqlConnection() {
   }
 }
 
-module.exports.getConnection = getConnection;
-module.exports.getMySqlConnection = getMySqlConnection;
+// module.exports.getConnection = getConnection;
+// module.exports.getMySqlConnection = getMySqlConnection;
+
+
+module.exports = {
+  getConnection,
+  getMySqlConnection
+}

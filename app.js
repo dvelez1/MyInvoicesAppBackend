@@ -1,14 +1,14 @@
-var express = require('express');
+var express = require("express");
 var app = express();
 app.use(express.json());
 
 // CORS Added to allow request from specific origin
-const cors = require('cors');
-const corsOptions ={
-  origin:'http://localhost:3000', 
-  credentials:true,            //access-control-allow-credentials:true
-  optionSuccessStatus:200
-}
+const cors = require("cors");
+const corsOptions = {
+  origin: "http://localhost:3000",
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+};
 app.use(cors(corsOptions));
 
 // Example use route and controller for the first two methods
@@ -24,9 +24,10 @@ require("./routes/invoicePayments.route")(app);
 
 //Serve Server
 var server = app.listen(5000, function () {
-    console.log('Invoice server is running..');
-  });
+  console.log("Invoice server is running..");
+});
 
+//#region Code To Test Connection to MySQL
 
 //   let mysql = require('mysql');
 
@@ -44,3 +45,5 @@ var server = app.listen(5000, function () {
 
 //   console.log('Connected to the MySQL server.');
 // });
+
+//#endregion
