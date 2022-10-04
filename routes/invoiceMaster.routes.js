@@ -1,24 +1,24 @@
-module.exports = appProduct => {
-    const invoiceMaster = require("../controller/invoiceMaster.controller");
-    var router = require("express").Router();
-  
-    router.get("/getInvoiceMasterAll", invoiceMaster.getInvoiceMasterAll);
-   
-    router.get("/getInvoiceMasterById/:Id", invoiceMaster.getInvoiceMasterById);
-    
-    router.get("/getInvoiceMasterByCustomerId", invoiceMaster.getInvoiceMasterByCustomerId);
+module.exports = (appProduct) => {
+  const invoiceMaster = require("../controller/invoiceMaster.controller");
+  var router = require("express").Router();
 
-    router.post("/updateInvoiceMaster", invoiceMaster.updateInvoiceMaster);
-   
-    router.put("/createInvoiceMaster", invoiceMaster.createInvoiceMaster);
+  router.get("/getInvoiceMasterById/:Id", invoiceMaster.getInvoiceMasterById);
 
-    router.delete("/deleteInvoiceMaster/:Id", invoiceMaster.deleteInvoiceMaster);
+  // Transformed Invoice
+  router.get(
+    "/getTransformedInvoiceAll",
+    invoiceMaster.getTransformedInvoiceAll
+  );
 
-    router.delete("/deleteInvoiceAllByInvoiceId/:Id", invoiceMaster.deleteInvoiceMaster);
+  router.post("/updateInvoiceMaster", invoiceMaster.updateInvoiceMaster);
 
-    // Transformed Invoice
-    router.get("/getTransformedInvoiceAll", invoiceMaster.getTransformedInvoiceAll);
-  
-    appProduct.use('/Api/invoiceMaster', router);
-  
-  };
+  router.put("/createInvoiceMaster", invoiceMaster.createInvoiceMaster);
+
+  router.delete("/deleteInvoiceMaster/:Id", invoiceMaster.deleteInvoiceMaster);
+
+  //router.delete("/deleteInvoiceAllByInvoiceId/:Id", invoiceMaster.deleteInvoiceMaster);
+  //router.get("/getInvoiceMasterAll", invoiceMaster.getInvoiceMasterAll);
+  //router.get("/getInvoiceMasterByCustomerId", invoiceMaster.getInvoiceMasterByCustomerId);
+
+  appProduct.use("/Api/invoiceMaster", router);
+};
