@@ -10,7 +10,6 @@ var date = require("../utilities/dateTime");
 const pool = dbConfig.getConnection(); // For Sql Server DB
 const mySql = dbConfig.getMySqlConnection();
 
-
 // MySQL with SP
 exports.getProducts = async (request, response) => {
   try {
@@ -32,7 +31,7 @@ exports.getProcuctById = async (request, response) => {
   try {
     const ProductId = parseInt(request.params.Id);
     queryString = "CALL sp_product_get_by_id(?)";
-    
+
     await mySql.query(queryString, ProductId, (err, data) => {
       if (err) {
         response.status(400).send(err);
@@ -48,54 +47,60 @@ exports.getProcuctById = async (request, response) => {
 
 //Post API
 exports.updateProduct = async (request, response) => {
-
   try {
     queryString = "CALL sp_product_update(?,?,?,?,?)";
 
     product = request.body;
     product.StartDate = date.getFormattedDate(product.StartDate);
     product.EndDate = date.getFormattedDate(product.EndDate);
-    
-    await mySql.query(queryString,
-      [product.ProductId,product.Name, product.Price, product.StartDate, product.EndDate]
-      , (err, data) => {
-      if (err) {
-        response.status(400).send(err);
-      } else {
-        response.status(200).send(data[0]);
+
+    await mySql.query(
+      queryString,
+      [
+        product.ProductId,
+        product.Name,
+        product.Price,
+        product.StartDate,
+        product.EndDate,
+      ],
+      (err, data) => {
+        if (err) {
+          response.status(400).send(err);
+        } else {
+          response.status(200).send(data[0]);
+        }
       }
-    });
+    );
   } catch (err) {
     console.log(err);
     response.status(500).send(err.message);
   }
-
 };
 
 // PUT API
 exports.createProduct = async (request, response) => {
-
   try {
     queryString = "CALL sp_product_create(?,?,?,?)";
 
     product = request.body;
     product.StartDate = date.getFormattedDate(product.StartDate);
     product.EndDate = date.getFormattedDate(product.EndDate);
-    
-    await mySql.query(queryString,
-      [product.Name, product.Price, product.StartDate, product.EndDate]
-      , (err, data) => {
-      if (err) {
-        response.status(400).send(err);
-      } else {
-        response.status(200).send(data[0]);
+
+    await mySql.query(
+      queryString,
+      [product.Name, product.Price, product.StartDate, product.EndDate],
+      (err, data) => {
+        if (err) {
+          response.status(400).send(err);
+        } else {
+          response.status(200).send(data[0]);
+        }
       }
-    });
+    );
   } catch (err) {
     console.log(err);
     response.status(500).send(err.message);
   }
- 
 };
 
 //#Region Methods with TSQL - SQL Server
