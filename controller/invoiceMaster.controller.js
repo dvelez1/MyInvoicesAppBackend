@@ -117,12 +117,14 @@ exports.createInvoiceMaster = async (request, response) => {
 };
 
 // Delete
+// TODO: Pending Testing
 exports.deleteInvoiceMaster = async (request, response) => {
   try {
     const InvoiceId = parseInt(request.params.Id);
-    queryString = "CALL sp_invoicemaster_delete(?)";
+    const Note = request.params.Note;
+    queryString = "CALL sp_invoicemaster_delete(?,?)";
 
-    await mySql.query(queryString, InvoiceId, (err, data) => {
+    await mySql.query(queryString, [InvoiceId, Note], (err, data) => {
       if (err) {
         response.status(400).send(err);
       } else {
