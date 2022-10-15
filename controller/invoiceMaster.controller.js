@@ -8,145 +8,118 @@ var invoiceMaster = require("../models/invoiceMaster.model");
 var date = require("../utilities/dateTime");
 
 const pool = dbConfig.getConnection();
+const mySql = dbConfig.getMySqlConnection();
 
-
-exports.getInvoiceMasterById = (request, response) => {
+exports.getInvoiceMasterById = async (request, response) => {
   try {
-    pool.connect().then(() => {
-      const id = parseInt(request.params.Id);
+    const InvoiceId = parseInt(request.params.Id);
+    queryString = "CALL sp_invoicemaster_get_by_id(?)";
 
-      queryString =
-        "select [InvoiceId],[StartDate],[CustomerId],[EndDate],[TransactionActive],[TotalAmount],[PayedAmount], Note from dbo.[InvoiceMaster] where InvoiceId=@Id";
-      pool
-        .request()
-        .input("Id", sql.Int, id)
-        .query(queryString, (err, result) => {
-          if (err) {
-            console.log(err);
-            response.sendStatus(400);
-          } else {
-            response.status(200).send(result.recordset);
-            //response.send(result.recordset);
-          }
-        });
+    await mySql.query(queryString, InvoiceId, (err, data) => {
+      if (err) {
+        response.status(400).send(err);
+      } else {
+        response.status(200).send(data[0]);
+      }
     });
   } catch (err) {
     console.log(err);
-    response.status(500);
-    response.send(err.message);
+    response.status(500).send(err.message);
   }
 };
 
 // Custom Object Method
-exports.getTransformedInvoiceAll = (request, response) => {
+exports.getTransformedInvoiceAll = async (request, response) => {
   try {
-    pool.connect().then(() => {
-      queryString =
-        " SELECT [InvoiceId],IM.[StartDate],IM.[CustomerId], C.[Name] as CustomerName, C.FirstName, C.LastName ,IM.[EndDate],[TransactionActive],[TotalAmount],[PayedAmount],[Note],[Void] " +
-        " FROM [dbo].[InvoiceMaster] as IM INNER JOIN Customer AS C ON IM.CustomerId = c.CustomerId where Void=0  order by InvoiceId ASC" +
-        " SELECT [InvoiceDetailsId],[InvoiceId],ID.[ProductId],P.[Name] as ProductName,[CatalogPrice],ID.[Price],[RemovedTransaction],[RemovedDate],[Quantity] " +
-        " FROM [dbo].[InvoiceDetails] AS ID INNER JOIN Product AS P ON ID.ProductId = P.ProductId where RemovedTransaction=0 and [InvoiceId] IN (SELECT InvoiceId FROM [dbo].[InvoiceMaster] where Void=0) order by InvoiceId ASC" +
-        " SELECT [InvoicePaiymentsId],[InvoiceId],[Payment],[TransactionDate],[RemovedTransactionDate],[RemovedTransaction] " +
-        " FROM [dbo].[InvoicePayments] WHERE RemovedTransaction = 0 and [InvoiceId] IN (SELECT InvoiceId FROM [dbo].[InvoiceMaster] where Void=0) order by InvoiceId ASC";
-
-      pool.request().query(queryString, (err, result) => {
-        if (err) {
-          console.log(err);
-          response.sendStatus(400);
-        } else {
-          response.status(200).send(result.recordsets);
-        }
-      });
+    queryString = "CALL sp_invoicemaster_custom_get()";
+    await mySql.query(queryString, (err, data) => {
+      if (err) {
+        response.status(400).send(err);
+      } else {
+        response.status(200).send(data[0]);
+      }
     });
   } catch (err) {
     console.log(err);
-    response.status(500);
-    response.send(err.message);
+    response.status(500).send(err.message);
   }
 };
 
 //Post API
-exports.updateInvoiceMaster = (request, response) => {
+exports.updateInvoiceMaster = async (request, response) => {
   try {
+    queryString = "CALL sp_invoicemaster_update(?,?,?,?,?,?,?,?,?)";
+
     invoiceMaster = request.body;
     invoiceMaster.StartDate = date.getFormattedDate(invoiceMaster.StartDate);
     invoiceMaster.EndDate = date.getFormattedDate(invoiceMaster.EndDate);
 
-    pool.connect().then(() => {
-      //simple query
-      queryString =
-        "Update dbo.InvoiceMaster " +
-        "SET CustomerId = @CustomerId,  StartDate = @StartDate, EndDate = @EndDate, TransactionActive = @TransactionActive, TotalAmount = @TotalAmount, PayedAmount = @PayedAmount, Note = @Note " +
-        " WHERE InvoiceId=@InvoiceId";
-
-      pool
-        .request()
-        .input("InvoiceId", sql.Int, invoiceMaster.InvoiceId)
-        .input("CustomerId", sql.Int, invoiceMaster.CustomerId)
-        .input("TotalAmount", sql.Money, invoiceMaster.TotalAmount)
-        .input("PayedAmount", sql.Money, invoiceMaster.PayedAmount)
-        .input("StartDate", sql.Date, invoiceMaster.StartDate)
-        .input("EndDate", sql.Date, invoiceMaster.EndDate)
-        .input("TransactionActive", sql.Bit, invoiceMaster.TransactionActive)
-        .input("Note", sql.VarChar, invoiceMaster.Note)
-        .query(queryString, (err, result) => {
-          if (err) {
-            console.log(err);
-            response.sendStatus(400);
-          } else {
-            response.status(200).send("Success");
-            //response.status(200).send({message: "Success"})
-          }
-        });
-    });
+    await mySql.query(
+      queryString,
+      [
+        invoiceMaster.InvoiceId,
+        invoiceMaster.StartDate,
+        invoiceMaster.CustomerId,
+        invoiceMaster.EndDate,
+        invoiceMaster.TransactionActive,
+        invoiceMaster.TotalAmount,
+        invoiceMaster.PayedAmount,
+        invoiceMaster.Note,
+        invoiceMaster.Void,
+      ],
+      (err, data) => {
+        if (err) {
+          response.status(400).send(err);
+        } else {
+          response.status(200).send(data[0]);
+        }
+      }
+    );
   } catch (err) {
     console.log(err);
-    response.status(500);
-    response.send(err.message);
+    response.status(500).send(err.message);
   }
 };
 
 // PUT API
-exports.createInvoiceMaster = (request, response) => {
+exports.createInvoiceMaster = async (request, response) => {
   try {
+    queryString = "CALL sp_invoicemaster_create(?,?,?,?,?,?,?,?)";
+
     invoiceMaster = request.body;
     invoiceMaster.StartDate = date.getFormattedDate(invoiceMaster.StartDate);
     invoiceMaster.EndDate = date.getFormattedDate(invoiceMaster.EndDate);
 
-    pool.connect().then(() => {
-      //simple query
-      queryString =
-        "Insert Into dbo.InvoiceMaster(CustomerId, TotalAmount, PayedAmount, StartDate, EndDate, TransactionActive, Note, Void) " +
-        "VALUES(@CustomerId, @TotalAmount, @PayedAmount, @StartDate,  @EndDate,  @TransactionActive, @Note, 0) " +
-        "SELECT SCOPE_IDENTITY() as Id";
-
-      pool
-        .request()
-        .input("CustomerId", sql.Int, invoiceMaster.CustomerId)
-        .input("TotalAmount", sql.Money, invoiceMaster.TotalAmount)
-        .input("PayedAmount", sql.Money, invoiceMaster.PayedAmount)
-        .input("StartDate", sql.Date, invoiceMaster.StartDate)
-        .input("EndDate", sql.Date, invoiceMaster.EndDate)
-        .input("TransactionActive", sql.Bit, invoiceMaster.TransactionActive)
-        .input("Note", sql.VarChar, invoiceMaster.Note)
-        .query(queryString, (err, result) => {
-          if (err) {
-            console.log(err);
-            response.sendStatus(400);
-          } else {
-            response.status(200).send(result.recordset);
-          }
-        });
-    });
+    await mySql.query(
+      queryString,
+      [
+        invoiceMaster.StartDate,
+        invoiceMaster.CustomerId,
+        invoiceMaster.EndDate,
+        invoiceMaster.TransactionActive,
+        invoiceMaster.TotalAmount,
+        invoiceMaster.PayedAmount,
+        invoiceMaster.Note,
+        invoiceMaster.Void,
+      ],
+      (err, data) => {
+        if (err) {
+          response.status(400).send(err);
+        } else {
+          response.status(200).send(data[0]);
+        }
+      }
+    );
   } catch (err) {
     console.log(err);
-    response.status(500);
-    response.send(err.message);
+    response.status(500).send(err.message);
   }
 };
 
 // Delete
 exports.deleteInvoiceMaster = (request, response) => {
+  // Pending Implementation
+  return;
   try {
     const id = parseInt(request.params.Id);
     invoiceMaster = request.body;
@@ -180,7 +153,6 @@ exports.deleteInvoiceMaster = (request, response) => {
     response.send(err.message);
   }
 };
-
 
 //#region SQL Server
 
