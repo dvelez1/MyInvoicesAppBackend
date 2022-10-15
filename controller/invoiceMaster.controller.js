@@ -117,40 +117,21 @@ exports.createInvoiceMaster = async (request, response) => {
 };
 
 // Delete
-exports.deleteInvoiceMaster = (request, response) => {
-  // Pending Implementation
-  return;
+exports.deleteInvoiceMaster = async (request, response) => {
   try {
-    const id = parseInt(request.params.Id);
-    invoiceMaster = request.body;
+    const InvoiceId = parseInt(request.params.Id);
+    queryString = "CALL sp_invoicemaster_delete(?)";
 
-    pool.connect().then(() => {
-      //simple query
-      queryString =
-        "Update dbo.InvoiceMaster " +
-        "SET Void = @Void, TransactionActive = @TransactionActive,  EndDate = @EndDate, Note = @Note  WHERE InvoiceId=@Id";
-
-      pool
-        .request()
-        .input("Id", sql.Int, id)
-        .input("EndDate", sql.Date, date.getCurrentDate())
-        .input("TransactionActive", sql.Bit, 0)
-        .input("Void", sql.Bit, 1)
-        .input("Note", sql.VarChar, invoiceMaster.Note)
-        .query(queryString, (err, result) => {
-          if (err) {
-            console.log(err);
-            response.sendStatus(400);
-          } else {
-            response.status(200).send("Success");
-            //response.status(200).send({message: "Success"})
-          }
-        });
+    await mySql.query(queryString, InvoiceId, (err, data) => {
+      if (err) {
+        response.status(400).send(err);
+      } else {
+        response.status(200).send(data[0]);
+      }
     });
   } catch (err) {
     console.log(err);
-    response.status(500);
-    response.send(err.message);
+    response.status(500).send(err.message);
   }
 };
 
