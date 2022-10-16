@@ -7,7 +7,7 @@ const dbConfig = require("../utilities/dbConnection");
 var invoiceMaster = require("../models/invoiceMaster.model");
 var date = require("../utilities/dateTime");
 
-const pool = dbConfig.getConnection();
+const pool = dbConfig.getConnection(); // For SQL Server
 const mySql = dbConfig.getMySqlConnection();
 
 exports.getInvoiceMasterById = async (request, response) => {
