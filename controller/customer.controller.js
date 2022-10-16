@@ -87,7 +87,7 @@ exports.updateCustomer = async (request, response) => {
 // PUT API
 exports.createCustomer = async (request, response) => {
   try {
-    queryString = "CALL sp_customer_update(?,?,?,?,?,?,?,?,?,?,?)";
+    queryString = "CALL sp_customer_create(?,?,?,?,?,?,?,?,?,?,?)";
 
     customer = request.body;
     customer.StartDate = date.getFormattedDate(customer.StartDate);
