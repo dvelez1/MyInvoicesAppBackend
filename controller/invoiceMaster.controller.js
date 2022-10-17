@@ -36,7 +36,7 @@ exports.getTransformedInvoiceAll = async (request, response) => {
       if (err) {
         response.status(400).send(err);
       } else {
-        response.status(200).send(data[0]);
+        response.status(200).send(data);
       }
     });
   } catch (err) {
