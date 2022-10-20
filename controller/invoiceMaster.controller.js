@@ -106,7 +106,6 @@ exports.createInvoiceMaster = async (request, response) => {
         if (err) {
           response.status(400).send(err);
         } else {
-          console.log("data",data[0])
           response.status(200).send(data[0]);
         }
       }
