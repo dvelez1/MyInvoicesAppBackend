@@ -2,6 +2,8 @@ var express = require("express");
 var app = express();
 app.use(express.json());
 
+const PORT = process.env.PORT || 5000;
+
 // CORS Added to allow request from specific origin
 const cors = require("cors");
 const corsOptions = {
@@ -23,7 +25,7 @@ require("./routes/InvoiceDetails.route")(app);
 require("./routes/invoicePayments.route")(app);
 
 //Serve Server
-var server = app.listen(5000, function () {
+var server = app.listen(PORT, function () {
   console.log("Invoice server is running..");
 });
 
