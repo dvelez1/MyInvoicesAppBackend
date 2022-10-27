@@ -6,12 +6,17 @@ const PORT = process.env.PORT || 5000;
 
 // CORS Added to allow request from specific origin
 const cors = require("cors");
-const corsOptions = {
-  origin: "http://localhost:3000",
-  credentials: true, //access-control-allow-credentials:true
-  optionSuccessStatus: 200,
-};
-app.use(cors(corsOptions));
+require('dotenv').config(); // Added
+
+// Commented temporary
+// const corsOptions = {
+//   origin: "http://localhost:3000",
+//   credentials: true, //access-control-allow-credentials:true
+//   optionSuccessStatus: 200,
+// };
+// app.use(cors(corsOptions));
+
+app.use(cors()); // Added
 
 // Example use route and controller for the first two methods
 require("./routes/product.routes")(app);

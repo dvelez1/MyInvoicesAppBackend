@@ -18,12 +18,28 @@ function getConnection() {
   }
 }
 
+// Local MySQL CONNECTION
+// function getMySqlConnection() {
+//   try {
+//     return new mysql.createPool({
+//       connectionLimit : 100, //important
+//       database: "Invoices",
+//       user:'root',
+//       password: '49bcrfem',
+//       host: "localhost",
+//       debug:false,
+//     });
+//   } catch (error) {
+//     console.log("Error get MySql connectinString");
+//   }
+// }
+
 function getMySqlConnection() {
   try {
     return new mysql.createPool({
       connectionLimit : 100, //important
-      database: "Invoices",
-      user:'root',
+      database: "smarxihn_invoice_db",
+      user:'smarxihn_invoice_use',
       password: '49bcrfem',
       host: "localhost",
       debug:false,
