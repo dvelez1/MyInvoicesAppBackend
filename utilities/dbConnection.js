@@ -1,33 +1,35 @@
-//SQL Server
-const sql = require("mssql/msnodesqlv8");
+//#region SQL Server
+
+// const sql = require("mssql/msnodesqlv8"); // TODO: For SQL Server
+// function getConnection() {
+//   try {
+//     return new sql.ConnectionPool({
+//       database: "Invoices",
+//       server: "(localdb)\\MSSQLLocalDB",
+//       driver: "msnodesqlv8",
+//       options: {
+//         trustedConnection: true,
+//       },
+//     });
+//   } catch (error) {
+//     console.log("Error get connectinString");
+//   }
+// }
+
+//#endregion
+
 // My Sql
 const mysql = require("mysql")
-
-
-function getConnection() {
-  try {
-    return new sql.ConnectionPool({
-      database: "Invoices",
-      server: "(localdb)\\MSSQLLocalDB",
-      driver: "msnodesqlv8",
-      options: {
-        trustedConnection: true,
-      },
-    });
-  } catch (error) {
-    console.log("Error get connectinString");
-  }
-}
 
 // Local MySQL CONNECTION
 // function getMySqlConnection() {
 //   try {
 //     return new mysql.createPool({
-//       connectionLimit : 100, //important
-//       database: "Invoices",
-//       user:'root',
-//       password: '49bcrfem',
-//       host: "localhost",
+//       host: "",
+//       user:'',
+//       password: '',
+//       database: "",
+//       connectionLimit : , //important
 //       debug:false,
 //     });
 //   } catch (error) {
@@ -35,11 +37,7 @@ function getConnection() {
 //   }
 // }
 
-// module.exports.getConnection = getConnection;
-// module.exports.getMySqlConnection = getMySqlConnection;
-
-
 module.exports = {
-  getConnection,
+  // getConnection,
   getMySqlConnection
 }

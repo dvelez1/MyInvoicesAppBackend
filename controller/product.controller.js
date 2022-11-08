@@ -1,4 +1,4 @@
-const sql = require("mssql/msnodesqlv8");
+// const sql = require("mssql/msnodesqlv8");
 var express = require("express");
 var app = express();
 app.use(express.json());
@@ -7,7 +7,7 @@ const dbConfig = require("../utilities/dbConnection");
 var product = require("../models/product.model");
 var date = require("../utilities/dateTime");
 
-const pool = dbConfig.getConnection(); // For Sql Server DB
+//const pool = dbConfig.getConnection(); // For Sql Server DB
 const mySql = dbConfig.getMySqlConnection();
 
 // MySQL with SP
@@ -103,7 +103,7 @@ exports.createProduct = async (request, response) => {
   }
 };
 
-//#Region Methods with TSQL - SQL Server
+//#region Methods with TSQL - SQL Server
 
 // exports.getProducts = (request, response) => {
 //     try {
@@ -230,4 +230,5 @@ exports.createProduct = async (request, response) => {
 //         response.send(err.message)
 //     }
 // };
+
 //#endregion

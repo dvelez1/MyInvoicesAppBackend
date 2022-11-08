@@ -1,4 +1,4 @@
-const sql = require("mssql/msnodesqlv8");
+//const sql = require("mssql/msnodesqlv8");
 var express = require("express");
 var app = express();
 app.use(express.json());
@@ -7,7 +7,7 @@ const dbConfig = require("../utilities/dbConnection");
 var invoiceDetails = require("../models/invoiceDetails.model");
 var date = require("../utilities/dateTime");
 
-const pool = dbConfig.getConnection(); // For Sql Server DB
+// const pool = dbConfig.getConnection(); // For Sql Server DB
 const mySql = dbConfig.getMySqlConnection();
 
 exports.getInvoiceDetailsByInvoiceId = async (request, response) => {
